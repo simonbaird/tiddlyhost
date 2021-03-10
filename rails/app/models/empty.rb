@@ -5,7 +5,7 @@ class Empty < ApplicationRecord
   scope :enabled, ->{ where(enabled: true) }
 
   def self.for_select
-    enabled.order(:id)
+    enabled.order(:sort_order)
   end
 
   def th_file
@@ -22,7 +22,7 @@ class Empty < ApplicationRecord
 
   # Returns a hash of names and versions
   def self.versions
-    Hash[ enabled.map{ |e| [e.name, e.th_file.tiddlywiki_version] } ]
+    Hash[ enabled.order(:sort_order).map{ |e| [e.name, e.th_file.tiddlywiki_version] } ]
   end
 
 end

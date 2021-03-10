@@ -10,6 +10,9 @@
       # that https://github.com/Jermolene/TiddlyWiki5/pull/5455 is included.
       url: https://tiddlywiki.com/prerelease/empty.html
 
+    - name: tw5-stable
+      url: https://tiddlywiki.com/empty.html
+
     - name: classic
       url: https://classic.tiddlywiki.com/empty.html
 
