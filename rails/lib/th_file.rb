@@ -40,24 +40,59 @@ class ThFile < TwFile
         # TiddlyWiki will POST to this url using code in core/modules/savers/upload.js
         '$:/UploadURL' => Settings.subdomain_site_url(site_name),
 
-        # Set this otherwise TiddlyWiki won't consider upload.js usable unless there
-        # is a username and password present.
-        '$:/UploadWithUrlOnly' => 'yes',
-
         # Autosave is nice, but I'm thinking we should start with it off to generate
         # a little less traffic.
         '$:/config/AutoSave' => 'no',
-
-        # A temporary workaround so users can install 5.1.23 plugins even though we're
-        # using a 5.1.24 TiddlyWiki prerelease.
-        '$:/config/OfficialPluginLibrary' => {
-          url: 'https://tiddlywiki.com/library/v5.1.23/index.html',
-          content: '{{$:/language/OfficialPluginLibrary/Hint}}',
-          caption: '{{$:/language/OfficialPluginLibrary}}',
-          tags: '$:/tags/PluginLibrary',
-        },
-
       })
+
+      if tiddlywiki_version == "5.1.24-prerelease"
+
+        write_tiddlers({
+          # Set this otherwise TiddlyWiki won't consider upload.js usable unless there
+          # is a username and password present.
+          '$:/UploadWithUrlOnly' => 'yes',
+
+          # A temporary workaround so users can install 5.1.23 plugins even though we're
+          # using a 5.1.24 TiddlyWiki prerelease.
+          '$:/config/OfficialPluginLibrary' => {
+            url: 'https://tiddlywiki.com/library/v5.1.23/index.html',
+            content: '{{$:/language/OfficialPluginLibrary/Hint}}',
+            caption: '{{$:/language/OfficialPluginLibrary}}',
+            tags: '$:/tags/PluginLibrary',
+          },
+        })
+
+      else # presumably 5.1.23
+
+        # Add an upload name
+        write_tiddlers({
+          "$:/UploadName" => '-ignored-',
+
+          "$:/plugins/tiddlyhost" => {
+            "plugin-type" => "plugin",
+            "type" => "application/json",
+            "list" => "readme",
+            # Creates a plugin, but doesn't run code. No idea what I'm doing...
+            content: <<-EOT.strip_heredoc,
+              {
+                "tiddlers": {
+                  "$:/plugins/tiddlyhost/tiddlyhost.js": {
+                    "title": "$:/plugins/tiddlyhost/tiddlyhost.js",
+                    "type": "application/javascript",
+                    "text": "(function(){ console.log('hello??'); })();"
+                  },
+                  "$:/plugins/tiddlyhost/readme": {
+                    "title": "$:/plugins/tiddlyhost/readme",
+                    "type": "text",
+                    "text": "Hi there"
+                  }
+                }
+              }
+            EOT
+          }
+        });
+
+      end
 
     else # classic
       # We don't want to hard code the site url in the plugin, but we also don't
