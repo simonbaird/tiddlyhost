@@ -23,12 +23,10 @@ class TwFile
   # We can't be certain, but we can sanity check a few things to
   # confirm that it at least looks like a legitimate TiddlyWiki
   def looks_valid?
-      # The application name is present
-      tiddlywiki_title == 'TiddlyWiki' &&
-        # Has one or other store divs but not both
-        (store.present? ^ encrypted_store.present?) &&
-        # We're able to extract a tiddlywiki version
-        tiddlywiki_version.present?
+    # Has one or other store divs but not both
+    (store.present? ^ encrypted_store.present?) &&
+      # We're able to extract a tiddlywiki version
+      tiddlywiki_version.present?
   end
 
   def is_classic?
@@ -61,6 +59,8 @@ class TwFile
 
   def tiddlywiki_version_area
     doc.at_xpath("/html/head/script[@id='versionArea']").presence
+      # For older tiddlywikis the script tag doesn't have the id
+      doc.at_xpath("/html/head/script").presence
   end
 
   def tiddlywiki_version_classic
@@ -116,15 +116,21 @@ class TwFile
     if existing_tiddler = tiddler(title, shadow)
       existing_tiddler.replace(tiddler_div)
     else
-      (shadow ? shadow_store : store) << tiddler_div
+      choose_store(shadow) << tiddler_div
     end
+  end
+
+  def choose_store(shadow)
+    # Old versions of TiddlyWiki classic don't have a shadow store.
+    # For those we'll just use the regular store.
+    shadow ? (shadow_store || store) : store
   end
 
   def tiddler(title, shadow=false)
     return if encrypted?
 
     # TODO: See how this works for titles with quotes in them
-    tiddler_divs = (shadow ? shadow_store : store).xpath("div[@title='#{title}']")
+    tiddler_divs = choose_store(shadow).xpath("div[@title='#{title}']")
     raise 'Multiple tiddlers found!' if tiddler_divs.length > 1
     tiddler_divs.first
   end
