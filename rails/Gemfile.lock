@@ -142,6 +142,9 @@ GEM
     nokogiri (1.11.1-x86_64-linux)
       racc (~> 1.4)
     orm_adapter (0.5.0)
+    paypal-checkout-sdk (1.0.3)
+      paypalhttp (~> 1.0.0)
+    paypalhttp (1.0.0)
     pg (1.2.3)
     public_suffix (4.0.6)
     puma (5.2.1)
@@ -251,6 +254,7 @@ DEPENDENCIES
   devise-security
   haml-rails
   jbuilder (~> 2.7)
+  paypal-checkout-sdk
   pg (~> 1.1)
   puma (~> 5.0)
   rails (~> 6.1.0)
