@@ -40,6 +40,10 @@ Rails.application.routes.draw do
         patch :upload
       end
     end
+
+    devise_scope :users do
+      get '/users/subscriptions', to: "subscriptions#index"
+    end
   end
 
   #

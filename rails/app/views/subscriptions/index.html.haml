@@ -1,0 +1,8 @@
+%h1 Subscriptions
+
+%p
+  =@user.name
+  =@user.email
+
+.subscribe
+  =render 'subscribe_button', client_id: @paypal_client_id, plan_id: @standard_plan_id
