@@ -35,6 +35,11 @@ Rails.application.routes.draw do
     get "hub/user/:username", controller: :hub, action: :user
 
     resources :sites do
+      collection do
+        get :claim_tspot_form
+        post :claim_tspot
+      end
+
       member do
         get :upload_form
         patch :upload

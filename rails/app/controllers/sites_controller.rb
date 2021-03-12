@@ -30,6 +30,10 @@ class SitesController < ApplicationController
   def upload_form
   end
 
+  # GET /sites/claim_tspot_form
+  def claim_tspot_form
+  end
+
   # POST /sites
   # POST /sites.json
   def create
@@ -84,6 +88,18 @@ class SitesController < ApplicationController
         format.html { render :edit }
         # format.json { render json: @site.errors, status: :unprocessable_entity }
       end
+    end
+  end
+
+  # POST /sites/claim_tspot
+  def claim_tspot
+    return redirect_to action: :claim_tspot_form \
+      unless @tspot_site_name = params[:tspot_site_name].presence
+
+    @tspot_site = Tiddlyspot::SiteFetcher.new(@tspot_site_name)
+    if @tspot_site.passwd_ok?(params[:password])
+      # Do stuff here
+      @success = true
     end
   end
 

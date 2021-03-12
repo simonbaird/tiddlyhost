@@ -1,0 +1,16 @@
+-if @success
+  %h2= "#{@tspot_site_name}.tiddlyspot.com claimed successfully!"
+
+  %p
+    Return to
+    =link_to('your sites', sites_path) + "."
+    -# TODO: Go to settings for the new site
+
+-else
+  %h2= "Unable to claim #{@tspot_site_name}.tiddlyspot.com"
+
+  %p
+    Try again or
+    =link_to('cancel', sites_path) + "."
+
+  =render 'claim_tspot_form'
