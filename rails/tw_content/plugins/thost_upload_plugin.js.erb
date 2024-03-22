@@ -192,13 +192,15 @@ bidix.initOption('txtThostSiteName','<%= site_name %>');
 // Tiddlyhost stuff
 //
 
-// So you can see edit controls via http
-config.options.chkHttpReadOnly = false;
-window.readOnly = false;
-window.showBackstage = true;
+bidix.actReadOnly = config.shadowTiddlers.TiddlyHostIsLoggedIn == "no"
+config.options.chkHttpReadOnly = bidix.actReadOnly;
+window.readOnly = bidix.actReadOnly;
+window.showBackstage = !bidix.actReadOnly;
 
-// Add 'upload to tiddlyhost' button
-config.shadowTiddlers.SideBarOptions = config.shadowTiddlers.SideBarOptions
-  .replace(/(<<saveChanges>>)/,"$1<<thostUpload>>");
+if (!bidix.actReadOnly) {
+  // Add 'upload to tiddlyhost' button
+  config.shadowTiddlers.SideBarOptions = config.shadowTiddlers.SideBarOptions
+    .replace(/(<<saveChanges>>)/,"$1<<thostUpload>>");
+}
 
 //}}}
